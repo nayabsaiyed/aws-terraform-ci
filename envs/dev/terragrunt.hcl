@@ -11,7 +11,7 @@ remote_state {
 
 
 terraform {
-  source = "..//..//modules"
+  source = "/home/runner/work/aws-terraform-ci/aws-terraform-ci/modules"
 }
 
 inputs = {
