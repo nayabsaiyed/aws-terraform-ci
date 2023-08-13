@@ -16,12 +16,13 @@ jobs:
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
+
     - name: Install Terragrunt
       run: |
         wget https://github.com/gruntwork-io/terragrunt/releases/download/v0.28.1/terragrunt_linux_amd64
         chmod +x terragrunt_linux_amd64
         sudo mv terragrunt_linux_amd64 /usr/local/bin/terragrunt  
-      
+
     - name: Setup AWS CLI
       uses: aws-actions/configure-aws-credentials@v1
       with:
@@ -29,12 +30,26 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-west-1
 
+    - name: Set up Terragrunt cache for Dev
+      if: github.ref == 'refs/heads/dev'
+      uses: actions/cache@v2
+      with:
+        path: envs/dev/.terragrunt-cache
+        key: dev-terragrunt-cache-${{ runner.os }}-${{ hashFiles('envs/dev/terragrunt.hcl') }}
+
     - name: Initialize and Apply Terraform using Terragrunt for Dev
       if: github.ref == 'refs/heads/dev'
       run: |
         cd envs/dev
         terragrunt init
         terragrunt apply -auto-approve
+
+    - name: Set up Terragrunt cache for Prod
+      if: github.ref == 'refs/heads/prod'
+      uses: actions/cache@v2
+      with:
+        path: envs/prod/.terragrunt-cache
+        key: prod-terragrunt-cache-${{ runner.os }}-${{ hashFiles('envs/prod/terragrunt.hcl') }}
 
     - name: Initialize and Apply Terraform using Terragrunt for Prod
       if: github.ref == 'refs/heads/prod'
