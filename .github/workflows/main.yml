@@ -41,7 +41,12 @@ jobs:
       if: github.ref == 'refs/heads/dev'
       run: |
         cd envs/dev
-        terragrunt init
+        pwd
+        ls -la
+        echo $PATH
+        echo $HOME
+        env
+        terragrunt init --terragrunt-log-level debug
         terragrunt apply -auto-approve
 
     - name: Set up Terragrunt cache for Prod
