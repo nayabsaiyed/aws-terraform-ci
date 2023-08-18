@@ -9,10 +9,6 @@ remote_state {
   }
 }
 
-terraform {
-  source = "../../modules"
-}
-
 inputs = {
   environment = "dev"
 }
